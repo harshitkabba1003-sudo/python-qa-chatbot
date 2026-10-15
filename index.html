@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python QA Chatbot</title>
-    <!-- PyScript CSS & JS (Executes Python in Browser) -->
+    <title>Python QA Assistant</title>
+    <!-- PyScript Core -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,37 +18,37 @@
             margin: 0;
         }
         .chat-container {
-            width: 450px;
+            width: 550px;
+            height: 680px;
             background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
             display: flex;
             flex-direction: column;
-            height: 600px;
             overflow: hidden;
         }
         .chat-header {
             background: #3776ab;
             color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
+            padding: 16px;
             font-size: 1.1em;
+            font-weight: bold;
+            text-align: center;
         }
         .chat-box {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
         .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 8px;
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-size: 0.95em;
-            line-height: 1.4;
+            line-height: 1.5;
         }
         .user-message {
             align-self: flex-end;
@@ -57,30 +57,43 @@
         }
         .bot-message {
             align-self: flex-start;
-            background: #e9ecef;
-            color: #333;
+            background: #f8f9fa;
+            color: #212529;
+            border: 1px solid #e9ecef;
+        }
+        pre {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.88em;
+            margin: 8px 0 0 0;
         }
         .input-container {
             display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-            background: #fafafa;
+            padding: 12px;
+            border-top: 1px solid #e9ecef;
+            background: #ffffff;
         }
         input[type="text"] {
             flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            padding: 10px 14px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
             outline: none;
+            font-size: 0.95em;
         }
         button {
             margin-left: 10px;
-            padding: 10px 15px;
+            padding: 10px 18px;
             background: #3776ab;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
+            font-weight: 500;
         }
         button:hover {
             background: #2b5b84;
@@ -90,46 +103,177 @@
 <body>
 
     <div class="chat-container">
-        <div class="chat-header">Python Assistant Chatbot</div>
+        <div class="chat-header">Python QA Assistant (Explanations & Examples)</div>
         <div id="chat-box" class="chat-box">
-            <div class="message bot-message">Hello! Ask me any Python programming question (e.g., list, dictionary, loop, variable).</div>
+            <div class="message bot-message">
+                Hello! Ask me any Python question. Every answer includes a practical code example.
+            </div>
         </div>
         <div class="input-container">
-            <input type="text" id="user-input" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') py:send_message(event)" />
+            <input type="text" id="user-input" placeholder="Ask about variables, loops, lists, functions..." onkeypress="if(event.key === 'Enter') py:send_message(event)" />
             <button py-click="send_message">Send</button>
         </div>
     </div>
 
-    <!-- Python Script Running Direct in Browser -->
+    <!-- Pure Python Engine running inside Browser -->
     <script type="py">
+        import math
+        import re
         from js import document
-        from pyodide.ffi import create_proxy
 
-        # Predefined Knowledge Base
+        # Knowledge Base with Detailed Answers & Code Examples
         KNOWLEDGE_BASE = {
-            "variable": "A variable in Python stores data values. Example: `x = 5` creates a variable named x.",
-            "list": "A list is an ordered, mutable collection of items. Example: `my_list = [1, 2, 3]`.",
-            "tuple": "A tuple is an ordered, immutable collection. Example: `my_tuple = (1, 2, 3)`.",
-            "dictionary": "A dictionary stores key-value pairs. Example: `my_dict = {'name': 'Alice', 'age': 20}`.",
-            "function": "Functions are defined using the `def` keyword. Example:\ndef greet():\n    print('Hello')",
-            "loop": "Python supports `for` loops and `while` loops to iterate over sequences.",
-            "class": "A class is a blueprint for creating objects (OOP). Example: `class Person:`.",
-            "pip": "PIP is the package installer for Python used to install external libraries.",
-            "lambda": "A lambda function is a small anonymous function defined using `lambda args: expression`."
+            "variable": {
+                "text": "A variable is a named location used to store data in memory.",
+                "example": "x = 10\nname = 'Alice'\nprint(f'{name} has {x} points.')"
+            },
+            "list": {
+                "text": "A list is an ordered, mutable collection that allows duplicate elements.",
+                "example": "fruits = ['apple', 'banana', 'cherry']\nfruits.append('orange')\nprint(fruits[0])  # Output: apple"
+            },
+            "tuple": {
+                "text": "A tuple is an ordered, immutable collection. Elements cannot be changed after creation.",
+                "example": "coordinates = (10.0, 20.0)\n# coordinates[0] = 5.0  # Raises TypeError\nprint(coordinates[1])"
+            },
+            "dictionary": {
+                "text": "A dictionary stores key-value pairs for fast data retrieval.",
+                "example": "student = {'name': 'Harshit', 'age': 19}\nprint(student['name'])\nstudent['age'] = 20"
+            },
+            "function": {
+                "text": "A function is a reusable block of code that executes when called.",
+                "example": "def add_numbers(a, b):\n    return a + b\n\nresult = add_numbers(5, 7)\nprint(result)  # Output: 12"
+            },
+            "for loop": {
+                "text": "A for loop iterates over a sequence (list, tuple, dictionary, set, or string).",
+                "example": "for i in range(3):\n    print(f'Iteration: {i}')"
+            },
+            "while loop": {
+                "text": "A while loop executes a block of code as long as its condition remains True.",
+                "example": "count = 0\nwhile count < 3:\n    print(count)\n    count += 1"
+            },
+            "class": {
+                "text": "A class acts as a blueprint for creating objects in Object-Oriented Programming (OOP).",
+                "example": "class Dog:\n    def __init__(self, name):\n        self.name = name\n\n    def bark(self):\n        return f'{self.name} says Woof!'\n\nmy_dog = Dog('Buddy')\nprint(my_dog.bark())"
+            },
+            "try except": {
+                "text": "The try-except block handles errors and exceptions gracefully without crashing the program.",
+                "example": "try:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero!')"
+            },
+            "lambda": {
+                "text": "A lambda function is a small, anonymous function defined inline.",
+                "example": "square = lambda x: x ** 2\nprint(square(5))  # Output: 25"
+            }
+        # --- Advanced Python Concepts ---
+    "list comprehension": {
+        "text": "List comprehension provides a concise way to create lists based on existing iterables.",
+        "example": "squares = [x**2 for x in range(10) if x % 2 == 0]\nprint(squares)  # Output: [0, 4, 16, 36, 64]"
+    },
+    "decorator": {
+        "text": "A decorator modifies or extends the behavior of a function or method without permanently altering its source code.",
+        "example": "def my_decorator(func):\n    def wrapper():\n        print('Before function execution')\n        func()\n        print('After function execution')\n    return wrapper\n\n@my_decorator\ndef say_hello():\n    print('Hello!')\n\nsay_hello()"
+    },
+    "generator": {
+        "text": "Generators are functions that yield values one at a time using the 'yield' keyword instead of returning everything at once, making them highly memory-efficient.",
+        "example": "def count_up_to(max_val):\n    count = 1\n    while count <= max_val:\n        yield count\n        count += 1\n\nfor num in count_up_to(3):\n    print(num)"
+    },
+    "context manager": {
+        "text": "Context managers handle resource allocation and setup/teardown automatically (e.g., file handling using 'with').",
+        "example": "with open('example.txt', 'w') as file:\n    file.write('Hello, World!')\n# File is automatically closed here"
+    },
+    "args and kwargs": {
+        "text": "*args allows passing a variable number of non-keyword arguments, while **kwargs allows passing variable keyword (named) arguments.",
+        "example": "def display_info(*args, **kwargs):\n    print('Positional args:', args)\n    print('Keyword args:', kwargs)\n\ndisplay_info(1, 2, 3, name='Alice', role='Developer')"
+    },
+    "dataclass": {
+        "text": "Introduced in Python 3.7, @dataclass automatically generates boilerplate code like __init__ and __repr__ for class objects.",
+        "example": "from dataclasses import dataclass\n\n@dataclass\nclass Product:\n    name: str\n    price: float\n    quantity: int = 1\n\nitem = Product(name='Laptop', price=999.99)\nprint(item)"
+    },
+    "map filter reduce": {
+        "text": "Functional tools to process sequences: map applies a function, filter selects items matching a condition, and reduce combines elements.",
+        "example": "from functools import reduce\n\nnums = [1, 2, 3, 4, 5]\nevens = list(filter(lambda x: x % 2 == 0, nums))\nsquared = list(map(lambda x: x**2, evens))\ntotal = reduce(lambda x, y: x + y, nums)\n\nprint('Evens:', evens)\nprint('Total Sum:', total)"
+    },
+    "collections": {
+        "text": "The collections module offers specialized container datatypes like Counter, defaultdict, and namedtuple beyond built-in dict/list.",
+        "example": "from collections import Counter, defaultdict\n\nwords = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']\ncounts = Counter(words)\nprint('Apple count:', counts['apple'])\n\n# Defaultdict example\nd = defaultdict(list)\nd['tech'].append('Python')"
+    },
+    "type hinting": {
+        "text": "Type hints specify the expected data types for function parameters and return values to improve code readability and static analysis.",
+        "example": "from typing import List, Optional\n\ndef calculate_total(prices: List[float], discount: Optional[float] = None) -> float:\n    total = sum(prices)\n    if discount:\n        total -= discount\n    return total\n\nprint(calculate_total([10.5, 20.0], discount=5.0))"
+    },
+    "walrus operator": {
+        "text": "The walrus operator (:=) assigns values to variables as part of a larger expression in Python 3.8+.",
+        "example": "sample_data = [1, 2, 3, 4, 5, 6, 7, 8]\nif (n := len(sample_data)) > 5:\n    print(f'List is long with {n} elements')"
+    }
         }
 
+        # Vector Match Engine (TF-IDF)
+        def tokenize(text):
+            return re.findall(r'\b\w+\b', text.lower())
+
+        def compute_tf(tokens):
+            tf = {}
+            for word in tokens:
+                tf[word] = tf.get(word, 0) + 1
+            total = len(tokens) or 1
+            for word in tf:
+                tf[word] /= total
+            return tf
+
+        def compute_idf(docs):
+            N = len(docs)
+            idf = {}
+            all_words = set(w for doc in docs for w in doc)
+            for w in all_words:
+                count = sum(1 for doc in docs if w in doc)
+                idf[w] = math.log((N + 1) / (count + 1)) + 1
+            return idf
+
+        doc_keys = list(KNOWLEDGE_BASE.keys())
+        doc_corpus = [tokenize(f"{k} {KNOWLEDGE_BASE[k]['text']}") for k in doc_keys]
+        idf_model = compute_idf(doc_corpus)
+
+        def get_tfidf_vector(tokens):
+            tf = compute_tf(tokens)
+            vector = {}
+            for word, val in tf.items():
+                idf = idf_model.get(word, math.log((len(doc_corpus) + 1) / 1) + 1)
+                vector[word] = val * idf
+            return vector
+
+        def cosine_similarity(v1, v2):
+            intersection = set(v1.keys()) & set(v2.keys())
+            dot = sum(v1[w] * v2[w] for w in intersection)
+            norm1 = math.sqrt(sum(val ** 2 for val in v1.values()))
+            norm2 = math.sqrt(sum(val ** 2 for val in v2.values()))
+            if norm1 == 0 or norm2 == 0:
+                return 0.0
+            return dot / (norm1 * norm2)
+
         def get_bot_response(user_query):
-            query = user_query.lower()
-            matched_answers = []
+            tokens = tokenize(user_query)
+            if not tokens:
+                return "Please enter a question."
 
-            for key, response in KNOWLEDGE_BASE.items():
-                if key in query:
-                    matched_answers.append(response)
+            q_vec = get_tfidf_vector(tokens)
+            best_score = 0.0
+            best_key = None
 
-            if matched_answers:
-                return "<br><br>".join(matched_answers)
+            for idx, key in enumerate(doc_keys):
+                d_vec = get_tfidf_vector(doc_corpus[idx])
+                score = cosine_similarity(q_vec, d_vec)
+                if score > best_score:
+                    best_score = score
+                    best_key = key
+
+            if best_score >= 0.1 and best_key:
+                entry = KNOWLEDGE_BASE[best_key]
+                # Format output with text explanation and code block
+                response = f"<b>Topic:</b> {best_key.title()}<br>"
+                response += f"{entry['text']}<br><br>"
+                response += f"<b>Example Code:</b><pre><code>{entry['example']}</code></pre>"
+                return response
             else:
-                return "I'm sorry, I don't have information on that yet. Try asking about lists, functions, loops, tuples, or variables."
+                return "I couldn't find a matching Python topic. Try asking about <i>lists, dictionary, try except, lambda, classes, or loops</i>."
 
         def send_message(event=None):
             input_field = document.getElementById("user-input")
@@ -140,23 +284,21 @@
 
             chat_box = document.getElementById("chat-box")
 
-            # Display User Message
+            # Append user message
             user_div = document.createElement("div")
             user_div.className = "message user-message"
             user_div.innerText = user_text
             chat_box.appendChild(user_div)
 
-            # Clear Input
             input_field.value = ""
 
-            # Get and Display Bot Response
+            # Append bot message
             bot_text = get_bot_response(user_text)
             bot_div = document.createElement("div")
             bot_div.className = "message bot-message"
             bot_div.innerHTML = bot_text
             chat_box.appendChild(bot_div)
 
-            # Auto-scroll
             chat_box.scrollTop = chat_box.scrollHeight
     </script>
 </body>
