@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python QA Chatbot</title>
+    <!-- PyScript CSS & JS (Executes Python in Browser) -->
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 450px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #3776ab;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        .user-message {
+            align-self: flex-end;
+            background: #3776ab;
+            color: white;
+        }
+        .bot-message {
+            align-self: flex-start;
+            background: #e9ecef;
+            color: #333;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            background: #fafafa;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+        button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background: #3776ab;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #2b5b84;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">Python Assistant Chatbot</div>
+        <div id="chat-box" class="chat-box">
+            <div class="message bot-message">Hello! Ask me any Python programming question (e.g., list, dictionary, loop, variable).</div>
+        </div>
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Type your question..." onkeypress="if(event.key === 'Enter') py:send_message(event)" />
+            <button py-click="send_message">Send</button>
+        </div>
+    </div>
+
+    <!-- Python Script Running Direct in Browser -->
+    <script type="py">
+        from js import document
+        from pyodide.ffi import create_proxy
+
+        # Predefined Knowledge Base
+        KNOWLEDGE_BASE = {
+            "variable": "A variable in Python stores data values. Example: `x = 5` creates a variable named x.",
+            "list": "A list is an ordered, mutable collection of items. Example: `my_list = [1, 2, 3]`.",
+            "tuple": "A tuple is an ordered, immutable collection. Example: `my_tuple = (1, 2, 3)`.",
+            "dictionary": "A dictionary stores key-value pairs. Example: `my_dict = {'name': 'Alice', 'age': 20}`.",
+            "function": "Functions are defined using the `def` keyword. Example:\ndef greet():\n    print('Hello')",
+            "loop": "Python supports `for` loops and `while` loops to iterate over sequences.",
+            "class": "A class is a blueprint for creating objects (OOP). Example: `class Person:`.",
+            "pip": "PIP is the package installer for Python used to install external libraries.",
+            "lambda": "A lambda function is a small anonymous function defined using `lambda args: expression`."
+        }
+
+        def get_bot_response(user_query):
+            query = user_query.lower()
+            matched_answers = []
+
+            for key, response in KNOWLEDGE_BASE.items():
+                if key in query:
+                    matched_answers.append(response)
+
+            if matched_answers:
+                return "<br><br>".join(matched_answers)
+            else:
+                return "I'm sorry, I don't have information on that yet. Try asking about lists, functions, loops, tuples, or variables."
+
+        def send_message(event=None):
+            input_field = document.getElementById("user-input")
+            user_text = input_field.value.strip()
+
+            if not user_text:
+                return
+
+            chat_box = document.getElementById("chat-box")
+
+            # Display User Message
+            user_div = document.createElement("div")
+            user_div.className = "message user-message"
+            user_div.innerText = user_text
+            chat_box.appendChild(user_div)
+
+            # Clear Input
+            input_field.value = ""
+
+            # Get and Display Bot Response
+            bot_text = get_bot_response(user_text)
+            bot_div = document.createElement("div")
+            bot_div.className = "message bot-message"
+            bot_div.innerHTML = bot_text
+            chat_box.appendChild(bot_div)
+
+            # Auto-scroll
+            chat_box.scrollTop = chat_box.scrollHeight
+    </script>
+</body>
+</html>
