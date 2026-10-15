@@ -18,8 +18,8 @@
             margin: 0;
         }
         .chat-container {
-            width: 550px;
-            height: 680px;
+            width: 580px;
+            height: 700px;
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.12);
@@ -129,11 +129,11 @@
             },
             "list": {
                 "text": "A list is an ordered, mutable collection that allows duplicate elements.",
-                "example": "fruits = ['apple', 'banana', 'cherry']\nfruits.append('orange')\nprint(fruits[0])  # Output: apple"
+                "example": "fruits = ['apple', 'banana', 'cherry']\nfruits.append('orange')\nprint(fruits[0])"
             },
             "tuple": {
                 "text": "A tuple is an ordered, immutable collection. Elements cannot be changed after creation.",
-                "example": "coordinates = (10.0, 20.0)\n# coordinates[0] = 5.0  # Raises TypeError\nprint(coordinates[1])"
+                "example": "coordinates = (10.0, 20.0)\nprint(coordinates[1])"
             },
             "dictionary": {
                 "text": "A dictionary stores key-value pairs for fast data retrieval.",
@@ -141,7 +141,7 @@
             },
             "function": {
                 "text": "A function is a reusable block of code that executes when called.",
-                "example": "def add_numbers(a, b):\n    return a + b\n\nresult = add_numbers(5, 7)\nprint(result)  # Output: 12"
+                "example": "def add_numbers(a, b):\n    return a + b\n\nresult = add_numbers(5, 7)\nprint(result)"
             },
             "for loop": {
                 "text": "A for loop iterates over a sequence (list, tuple, dictionary, set, or string).",
@@ -153,7 +153,7 @@
             },
             "class": {
                 "text": "A class acts as a blueprint for creating objects in Object-Oriented Programming (OOP).",
-                "example": "class Dog:\n    def __init__(self, name):\n        self.name = name\n\n    def bark(self):\n        return f'{self.name} says Woof!'\n\nmy_dog = Dog('Buddy')\nprint(my_dog.bark())"
+                "example": "class Dog:\n    def __init__(self, name):\n        self.name = name\n    def bark(self):\n        return f'{self.name} says Woof!'\n\nmy_dog = Dog('Buddy')\nprint(my_dog.bark())"
             },
             "try except": {
                 "text": "The try-except block handles errors and exceptions gracefully without crashing the program.",
@@ -161,49 +161,49 @@
             },
             "lambda": {
                 "text": "A lambda function is a small, anonymous function defined inline.",
-                "example": "square = lambda x: x ** 2\nprint(square(5))  # Output: 25"
+                "example": "square = lambda x: x ** 2\nprint(square(5))"
+            },
+            # --- Advanced Python Concepts ---
+            "list comprehension": {
+                "text": "List comprehension provides a concise way to create lists based on existing iterables.",
+                "example": "squares = [x**2 for x in range(10) if x % 2 == 0]\nprint(squares)"
+            },
+            "decorator": {
+                "text": "A decorator modifies or extends the behavior of a function or method without permanently altering its source code.",
+                "example": "def my_decorator(func):\n    def wrapper():\n        print('Before execution')\n        func()\n        print('After execution')\n    return wrapper\n\n@my_decorator\ndef say_hello():\n    print('Hello!')\n\nsay_hello()"
+            },
+            "generator": {
+                "text": "Generators are functions that yield values one at a time using 'yield', making them highly memory-efficient.",
+                "example": "def count_up_to(max_val):\n    count = 1\n    while count <= max_val:\n        yield count\n        count += 1\n\nfor num in count_up_to(3):\n    print(num)"
+            },
+            "context manager": {
+                "text": "Context managers handle resource allocation and setup/teardown automatically (e.g., file handling using 'with').",
+                "example": "with open('example.txt', 'w') as file:\n    file.write('Hello, World!')"
+            },
+            "args and kwargs": {
+                "text": "*args allows passing variable non-keyword arguments, while **kwargs allows passing variable keyword arguments.",
+                "example": "def display_info(*args, **kwargs):\n    print('Positional args:', args)\n    print('Keyword args:', kwargs)\n\ndisplay_info(1, 2, 3, name='Alice', role='Developer')"
+            },
+            "dataclass": {
+                "text": "Introduced in Python 3.7, @dataclass automatically generates boilerplate code like __init__ and __repr__ for objects.",
+                "example": "from dataclasses import dataclass\n\n@dataclass\nclass Product:\n    name: str\n    price: float\n    quantity: int = 1\n\nitem = Product(name='Laptop', price=999.99)\nprint(item)"
+            },
+            "map filter reduce": {
+                "text": "Functional tools to process sequences: map applies a function, filter selects items, and reduce combines elements.",
+                "example": "from functools import reduce\nnums = [1, 2, 3, 4, 5]\nevens = list(filter(lambda x: x % 2 == 0, nums))\ntotal = reduce(lambda x, y: x + y, nums)\nprint('Evens:', evens)\nprint('Total Sum:', total)"
+            },
+            "collections": {
+                "text": "The collections module offers specialized datatypes like Counter, defaultdict, and namedtuple beyond built-in dict/list.",
+                "example": "from collections import Counter\nwords = ['apple', 'banana', 'apple']\ncounts = Counter(words)\nprint('Apple count:', counts['apple'])"
+            },
+            "type hinting": {
+                "text": "Type hints specify the expected data types for parameters and return values to improve readability.",
+                "example": "from typing import List, Optional\n\ndef calculate_total(prices: List[float], discount: Optional[float] = None) -> float:\n    total = sum(prices)\n    if discount:\n        total -= discount\n    return total\n\nprint(calculate_total([10.5, 20.0], discount=5.0))"
+            },
+            "walrus operator": {
+                "text": "The walrus operator (:=) assigns values to variables as part of a larger expression in Python 3.8+.",
+                "example": "sample_data = [1, 2, 3, 4, 5, 6, 7, 8]\nif (n := len(sample_data)) > 5:\n    print(f'List is long with {n} elements')"
             }
-        # --- Advanced Python Concepts ---
-    "list comprehension": {
-        "text": "List comprehension provides a concise way to create lists based on existing iterables.",
-        "example": "squares = [x**2 for x in range(10) if x % 2 == 0]\nprint(squares)  # Output: [0, 4, 16, 36, 64]"
-    },
-    "decorator": {
-        "text": "A decorator modifies or extends the behavior of a function or method without permanently altering its source code.",
-        "example": "def my_decorator(func):\n    def wrapper():\n        print('Before function execution')\n        func()\n        print('After function execution')\n    return wrapper\n\n@my_decorator\ndef say_hello():\n    print('Hello!')\n\nsay_hello()"
-    },
-    "generator": {
-        "text": "Generators are functions that yield values one at a time using the 'yield' keyword instead of returning everything at once, making them highly memory-efficient.",
-        "example": "def count_up_to(max_val):\n    count = 1\n    while count <= max_val:\n        yield count\n        count += 1\n\nfor num in count_up_to(3):\n    print(num)"
-    },
-    "context manager": {
-        "text": "Context managers handle resource allocation and setup/teardown automatically (e.g., file handling using 'with').",
-        "example": "with open('example.txt', 'w') as file:\n    file.write('Hello, World!')\n# File is automatically closed here"
-    },
-    "args and kwargs": {
-        "text": "*args allows passing a variable number of non-keyword arguments, while **kwargs allows passing variable keyword (named) arguments.",
-        "example": "def display_info(*args, **kwargs):\n    print('Positional args:', args)\n    print('Keyword args:', kwargs)\n\ndisplay_info(1, 2, 3, name='Alice', role='Developer')"
-    },
-    "dataclass": {
-        "text": "Introduced in Python 3.7, @dataclass automatically generates boilerplate code like __init__ and __repr__ for class objects.",
-        "example": "from dataclasses import dataclass\n\n@dataclass\nclass Product:\n    name: str\n    price: float\n    quantity: int = 1\n\nitem = Product(name='Laptop', price=999.99)\nprint(item)"
-    },
-    "map filter reduce": {
-        "text": "Functional tools to process sequences: map applies a function, filter selects items matching a condition, and reduce combines elements.",
-        "example": "from functools import reduce\n\nnums = [1, 2, 3, 4, 5]\nevens = list(filter(lambda x: x % 2 == 0, nums))\nsquared = list(map(lambda x: x**2, evens))\ntotal = reduce(lambda x, y: x + y, nums)\n\nprint('Evens:', evens)\nprint('Total Sum:', total)"
-    },
-    "collections": {
-        "text": "The collections module offers specialized container datatypes like Counter, defaultdict, and namedtuple beyond built-in dict/list.",
-        "example": "from collections import Counter, defaultdict\n\nwords = ['apple', 'banana', 'apple', 'orange', 'banana', 'apple']\ncounts = Counter(words)\nprint('Apple count:', counts['apple'])\n\n# Defaultdict example\nd = defaultdict(list)\nd['tech'].append('Python')"
-    },
-    "type hinting": {
-        "text": "Type hints specify the expected data types for function parameters and return values to improve code readability and static analysis.",
-        "example": "from typing import List, Optional\n\ndef calculate_total(prices: List[float], discount: Optional[float] = None) -> float:\n    total = sum(prices)\n    if discount:\n        total -= discount\n    return total\n\nprint(calculate_total([10.5, 20.0], discount=5.0))"
-    },
-    "walrus operator": {
-        "text": "The walrus operator (:=) assigns values to variables as part of a larger expression in Python 3.8+.",
-        "example": "sample_data = [1, 2, 3, 4, 5, 6, 7, 8]\nif (n := len(sample_data)) > 5:\n    print(f'List is long with {n} elements')"
-    },
         }
 
         # Vector Match Engine (TF-IDF)
@@ -265,15 +265,14 @@
                     best_score = score
                     best_key = key
 
-            if best_score >= 0.1 and best_key:
+            if best_score >= 0.08 and best_key:
                 entry = KNOWLEDGE_BASE[best_key]
-                # Format output with text explanation and code block
                 response = f"<b>Topic:</b> {best_key.title()}<br>"
                 response += f"{entry['text']}<br><br>"
                 response += f"<b>Example Code:</b><pre><code>{entry['example']}</code></pre>"
                 return response
             else:
-                return "I couldn't find a matching Python topic. Try asking about <i>lists, dictionary, try except, lambda, classes, or loops</i>."
+                return "I couldn't find a matching Python topic. Try asking about <i>lists, dictionary, try except, lambda, classes, decorators, or generators</i>."
 
         def send_message(event=None):
             input_field = document.getElementById("user-input")
